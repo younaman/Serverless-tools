@@ -16,13 +16,66 @@ The `aws_escalate.py` script scans applications within an AWS account to identif
 
 ### **Setup and Usage**
 
-1. **Upload the Script**  
-   Upload the `aws_escalate.py` script to your AWS CloudShell environment.
-
-2. **Modify the Credentials File**  
+1. **Modify the Credentials File**
    Update the `credentials` file located in the `.aws` directory with the following format:
-   ```plaintext
+```plaintext
    [default]
    aws_access_key_id = AKIA*****   # AccessKeyID
-   aws_secret_access_key = ******* # SecretAccessKey analyzing all third-party applications and automatically generating Proof-of-Concept (PoC) exploits to simulate potential attacks.
-We appreciate your interest and welcome any feedback or suggestions as we continue to refine and improve these tools!
+   aws_secret_access_key = ******* # SecretAccessKey
+```
+The role or user associated with these access keys must have permission to access all resources within the account.
+
+2. **Run the Tool**
+  Execute the script using the following command:
+```plaintext
+python ./aws_escalate.py -p default > aws_output.txt
+```
+The output of the scan will be saved to `aws_output.txt`.
+
+3. **Download and Review Results**
+After the script completes, download the `aws_output.txt` file to view the scanning results.
+
+## **Aliyun Scanning Tool (aliyun_escalate.py)**
+
+### **Description**
+The `aliyun_escalate.py` script scans applications within an Aliyun account to identify potential risks. It requires the installation of specific Python libraries and a properly configured input file.
+
+### **Setup and Usage**
+
+1. **Install Required Python Libraries**
+Install Required Python Libraries
+Ensure you have installed all necessary Python libraries for running the script.
+
+2. **Modify the Input File**
+Update the `aliyun_input.txt` file with the appropriate values corresponding to your environment.
+
+3. **Run the Tool**
+Execute the script using the following command:
+
+```plaintext
+python ./aliyun_escalate.py < aliyun_input.txt > aliyun_output.txt
+```
+The output of the scan will be saved to aliyun_output.txt.
+
+4. **Review Results**
+After the script completes, open the `aliyun_output.txt` file to review the scan results.
+
+## **Current Development Status**
+These tools are currently in the "strawman design" phase, and we are actively working toward achieving the following goals:
+
+1. **Automatic Identification of High-Risk Third-Party Applications**
+Enhance the tools to automatically identify all third-party applications within the account that pose potential risks.
+
+2. **Construction of Attack Paths**
+Construction of Attack Paths
+Leverage dangerous functions of third-party applications to construct actionable attack paths.
+
+3. **Automated PoC Generation**
+
+Build a comprehensive tool capable of analyzing all third-party applications and automatically generating Proof-of-Concept (PoC) exploits to simulate potential attacks.
+
+## **Disclaimer**
+These tools are intended for research and educational purposes only. Use them responsibly and only with proper authorization. Unauthorized use of these tools may violate applicable laws and regulations.
+
+## **Feedback and Contributions**
+We welcome feedback, suggestions, and contributions to improve these tools. If you encounter any issues or have ideas for enhancement, feel free to open an issue or submit a pull request. Thank you for your interest!
