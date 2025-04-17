@@ -135,7 +135,7 @@ def extract_permissions_from_method(method, escalation_method1, escalation_metho
 def extract_role_name(role_arn):
     if not role_arn or 'role/' not in role_arn:
         return None
-    # RoleArn 格式为 acs:ram::account-id:role/role-name
+    # RoleArn: acs:ram::account-id:role/role-name
     return role_arn.split('role/')[-1].lower()
 
 
