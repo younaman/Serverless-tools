@@ -44,12 +44,16 @@ The `aliyun_escalate.py` script scans applications within an Aliyun account to i
 
 1. **Install Required Python Libraries**
 Install Required Python Libraries
+```plaintext
+pip install -r requirements.txt  
+```
+Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
-2. **Modify the Input File**
+3. **Modify the Input File**
 Update the `aliyun_input.txt` file with the appropriate values corresponding to your environment.
 
-3. **Run the Tool**
+4. **Run the Tool**
 Execute the script using the following command:
 
 ```plaintext
