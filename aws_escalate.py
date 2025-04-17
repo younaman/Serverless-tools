@@ -528,9 +528,9 @@ def get_function_based_path(escalation_group_all,all_permission_location):
 
         for perm in first_permissions:
             if perm in permission_to_locations:
-                replaced_first_permissions_list.append(permission_to_locations[perm])  # 添加所有可能的位置
+                replaced_first_permissions_list.append(permission_to_locations[perm]) 
             else:
-                replaced_first_permissions_list.append([f"{{{perm}}}{perm}"])  # 如果没有位置，仍标明权限名称
+                replaced_first_permissions_list.append([f"{{{perm}}}{perm}"]) 
 
         if len(parts) > 1 and "'" in parts[1]:
             second_part = parts[1]
@@ -539,9 +539,9 @@ def get_function_based_path(escalation_group_all,all_permission_location):
 
             for perm in second_permissions:
                 if perm in permission_to_locations:
-                    replaced_second_permissions_list.append(permission_to_locations[perm])  # 添加所有可能的位置
+                    replaced_second_permissions_list.append(permission_to_locations[perm]) 
                 else:
-                    replaced_second_permissions_list.append([f"{{{perm}}}{perm}"])  # 如果没有位置，仍标明权限名称
+                    replaced_second_permissions_list.append([f"{{{perm}}}{perm}"])  
 
             for first_combination in product(*replaced_first_permissions_list):
                 for second_combination in product(*replaced_second_permissions_list):
