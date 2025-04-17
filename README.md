@@ -50,7 +50,7 @@ pip install -r requirements.txt
 Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
-2. **Modify the Input File**
+2. **Create the Input File**
 Create `aliyun_input.txt` file with the appropriate values corresponding to your environment.
 
 3. **Run the Tool**
