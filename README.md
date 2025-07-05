@@ -27,9 +27,11 @@ The role or user associated with these access keys must have permission to acces
 
 2. **Run the Tool**
   Execute the script using the following command:
+
 ```plaintext
 python ./aws_escalate.py -p default > aws_output.txt
 ```
+
 The output of the scan will be saved to `aws_output.txt`.
 
 3. **Download and Review Results**
@@ -44,15 +46,25 @@ The `aliyun_escalate.py` script scans applications within an Aliyun account to i
 
 1. **Install Required Python Libraries**
 Install Required Python Libraries
+
 ```plaintext
 pip install -r requirements.txt  
 ```
+
 Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
 2. **Create the Input File**
-Create `aliyun_input.txt` file with the appropriate values corresponding to your environment.
+Create `aliyun_input.txt` file with the appropriate values corresponding to your environment.The content in aliyun_input.txt is as follows:
 
+```plaintext
+<Access Key ID>
+<Secret Access Key>
+<Region ID>
+<Account ID> 
+```
+
+And place this file in the same directory as 'aliyun_escalate.py'.
 3. **Run the Tool**
 Execute the script using the following command:
 
