@@ -104,27 +104,21 @@ Account 1:
 ### **Test Cases**
 
 - Minimal Permissions (No Escalation)
- **Setup**: Create a role with only read-only permissions, and a Lambda function using this role.  
+ **Setup**: Create a role with read-only permissions and associate this role with a Lambda function in the account.
  **Expected Output**:  
   - The function should be marked as "it is safe!"  
   - No privilege escalation paths should be found.  
 
 - Confirmed Escalation Path
-  **Setup**: Create a role with escalation-related permissions (e.g., `iam:PassRole` and `lambda:CreateFunction`), and assign it to a Lambda function.  
+  **Setup**: Create a role with escalation-related permissions (e.g., `sts:AssumeRole` and `lambda:UpdateFunctionCode`), and assign it to a Lambda function.  
   **Expected Output**:  
   - The function should list these permissions as CONFIRMED.  
   - The script should output a privilege escalation path involving these permissions.  
 
 - Cross-Account Contamination
-  **Setup**: Multiple stacks/functions, at least one with `lambda:UpdateFunctionConfiguration` permission.  
+  **Setup**: Multiple stacks/functions, at least one of which in Account 2 has the 'lambda:UpdateFunctionConfiguration' permission, and attack strategies 1 or 2 can be implemented in Account 1 (for example, the functions in Account 1 have "sts: Assumerole "or" lambda: UpdateFunctionCode ").
   **Expected Output**:  
   - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
-
-- Deny Policies
-  **Setup**: A role with `*` allow but explicit deny on escalation actions.  
-  **Expected Output**:  
-  - The script should indicate "Might already be an admin, check any explicit denies or policy condition keys!"  
-  - No confirmed escalation path.  
 
 - Invalid/Expired Credentials
   **Setup**: Run the script with invalid or expired AWS credentials.  
@@ -250,34 +244,30 @@ Account 1:
 
 ### **Test Cases**
 
+### **Test Cases**
+
 - Minimal Permissions (No Escalation)
-  **Setup**: Create a RAM role with only read-only permissions, and a FC function using this role.  
-  **Expected Output**:  
-  - The function should be marked as "It is safe!"  
+ **Setup**: Create a role with read-only permissions and associate this role with a function in the account.
+ **Expected Output**:  
+  - The function should be marked as "it is safe!"  
   - No privilege escalation paths should be found.  
 
 - Confirmed Escalation Path
-  **Setup**: Create a RAM role with `ram:PassRole` and `fc:CreateFunction` permissions, and assign it to a FC function.  
+  **Setup**: Create a role with escalation-related permissions (e.g., `sts:AssumeRole` and `fc:UpdateFunctionCode`), and assign it to a function.  
   **Expected Output**:  
   - The function should list these permissions as CONFIRMED.  
   - The script should output a privilege escalation path involving these permissions.  
 
 - Cross-Account Contamination
-  **Setup**: Multiple services/functions, at least one with `fc:UpdateFunctionConfiguration` permission.  
+  **Setup**: Multiple stacks/functions, at least one of which in Account 2 has the `fc:UpdateFunctionConfiguration` permission, and attack strategies 1 or 2 can be implemented in Account 1 (for example, the functions in Account 1 have `sts: Assumerole` or `fc: UpdateFunctionCode`).
   **Expected Output**:  
   - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
 
-- Deny Policies
-  **Setup**: A role with `*` allow but explicit deny on escalation actions.  
-  **Expected Output**:  
-  - The script should indicate "Might already be an admin, check any explicit denies or policy condition keys!"  
-  - No confirmed escalation path.  
-
 - Invalid/Expired Credentials
-  **Setup**: Run the script with invalid or expired Access Key/Secret.  
-- **Expected Output**:  
-  - The script should fail gracefully and print an error message.  
-
+  **Setup**: Run the script with invalid or expired AWS credentials.  
+  **Expected Output**:  
+  - The script should fail gracefully and print an error message.
+  
 ---
 
 ## **Current Development Status**
