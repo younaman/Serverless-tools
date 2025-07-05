@@ -40,7 +40,7 @@ The role or user associated with these access keys must have permission to acces
 ```plaintext
 python ./aws_escalate.py -p default > aws_output.txt
 ```
-If you do not specify a profile, you will be prompted to select one from your AWS CLI configuration.
+If you do not specify a profile[-p default], you will be prompted to select one from your AWS CLI configuration.
 
 The output of the scan will be saved to `aws_output.txt`.
 
