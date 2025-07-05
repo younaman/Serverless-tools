@@ -116,7 +116,7 @@ Account 1:
   - The script should output a privilege escalation path involving these permissions.  
 
 - Cross-Account Contamination
-  **Setup**: Multiple stacks/functions, at least one of which in Account 2 has the 'lambda:UpdateFunctionConfiguration' permission, and attack strategies 1 or 2 can be implemented in Account 1 (for example, the functions in Account 1 have "sts: Assumerole "or" lambda: UpdateFunctionCode ").
+  **Setup**: Multiple stacks/functions, at least one of which in Account 2 has the `lambda:UpdateFunctionConfiguration` permission, and attack strategies 1 or 2 can be implemented in Account 1 (for example, the functions in Account 1 have `sts: Assumerole` or `lambda: UpdateFunctionCode`).
   **Expected Output**:  
   - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
 
