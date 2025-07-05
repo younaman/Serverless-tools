@@ -17,7 +17,7 @@ The `aws_escalate.py` script scans applications within an AWS account to identif
 ### **Setup and Usage**
 
 1. **Modify the Credentials File**
-   Update the `credentials` file located in the `.aws` directory with the following format:
+   Update the `credentials` file located in the `.aws` directory with the following format in AWS CloudShell:
 ```plaintext
    [default]
    aws_access_key_id = AKIA*****   # AccessKeyID
