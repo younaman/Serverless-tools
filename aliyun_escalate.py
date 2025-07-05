@@ -19,12 +19,14 @@ def print_service_function_permissions(service_function_permissions):
 
             print(f"  Function: {function_name}")
             print(f"    Role ARN: {role_arn}")
-            print(f"  CONFIRMED: {confirmed}")
+            if confirmed:
+                print(f"    CONFIRMED: {confirmed}")
+            else:
+                print("    It is safe!")
             if function != service['Function'][-1]:
-                print("    " + "-" * 40)
+                print("  " + "-" * 40)
 
-        if service != service_function_permissions[-1]:
-            print()
+        print("=" * 60)
 
 # get function_based attack path
 def get_function_based_path(escalation_group_all,all_permission_location):
@@ -74,16 +76,6 @@ def get_function_based_path(escalation_group_all,all_permission_location):
                 updated_escalation_group.append(updated_path)
     return updated_escalation_group
 
-# generate all combinations
-def generate_combinations(stack_list, n):
-    all_combinations = []
-    for i in range(1, n):
-        for combo in combinations(stack_list, i):
-            group1 = list(combo)
-            group2 = [x for x in stack_list if x not in group1]
-            all_combinations.append((group1, group2))
-    return all_combinations
-
 # Compute the union of Confirmed permissions for a group
 def get_confirmed_union(group, stack_data):
     confirmed_set = set()
@@ -116,9 +108,8 @@ def check_escalation_method2(confirmed_list, escalation_method1, escalation_meth
     return matched_methods
 
 #Extract the permissions from the attack path
-def extract_permissions_from_method(method, escalation_method1, escalation_method2):
+def extract_permissions_from_method(method, escalation_method1, escalation_method2, escalation_method3=None):
     permissions = []
-    # Extract the method name (assuming the format "confirm: 'method_name' ->..." Or "confirm: 'method2' -> 'method1' ->...")
     method_parts = method.split(" -> ")
     if "function_escalation_method2" in method_parts[-1]:
         method2_name = method_parts[0].split("'")[1]
@@ -128,6 +119,9 @@ def extract_permissions_from_method(method, escalation_method1, escalation_metho
     elif "function_escalation_method1" in method_parts[-1]:
         method1_name = method_parts[0].split("'")[1]
         permissions.extend(list(escalation_method1[method1_name].keys()))
+    elif escalation_method3 and "function_escalation_method3" in method_parts[-1]:
+        method3_name = method_parts[0].split("'")[1]
+        permissions.extend(list(escalation_method3[method3_name].keys()))
     return permissions
 
 
@@ -230,20 +224,6 @@ def list_services_and_functions(fc_client):
             next_token = response.data.get('nextToken', None)
             if not next_token:
                 break
-        '''
-        for service_name, info in service_function_map.items():
-            print(f"\nApplication/Service: {service_name}")
-            print(f"Service Default Role: {info['service_role']}")
-            print("Functions:")
-            if not info['functions']:
-                print("  No functions found in this service.")
-            else:
-                for func in info['functions']:
-                    print(f"  --Function Name: {func['name']}")
-                    print(f"    Function ID: {func['id']}")
-                    print(f"    Function-Level Role: {func['function_role']}")
-                    print(f"    Effective Role: {func['effective_role']}")
-        '''
         return service_function_role
 
     except Exception as e:
@@ -556,11 +536,11 @@ if __name__ == '__main__':
             # Are they an admin already?
             if '*' in role['Permissions']['Allow'] and role['Permissions']['Allow']['*']['Resources'] == ['*']:
                 if role['Permissions']['Deny'] == {} and role['Permissions']['Allow']['*']['Conditions'] == []:
-                    role['CheckedMethods'] = {'admin': {}, 'Confirmed': {}, 'Potential': {}}
+                    role['CheckedMethods'] = {'admin': {}, 'Confirmed': ['ram:AttachRolePolicy', 'ram:CreateRole', 'ram:PassRole', 'ram:PutRolePolicy', 'ram:UpdateAssumeRolePolicy', 'fc:AddPermission', 'fc:CreateFunction', 'fc:UpdateFunctionCode', 'fc:UpdateFunctionConfiguration', 'sts:AssumeRole'], 'Potential': {}}
                     print('  Already an admin!')
                     continue
                 else:
-                    role['CheckedMethods'] = {'possible_admin': {}, 'Confirmed': {}, 'Potential': {}}
+                    role['CheckedMethods'] = {'possible_admin': {}, 'Confirmed': ['ram:AttachRolePolicy', 'ram:CreateRole', 'ram:PassRole', 'ram:PutRolePolicy', 'ram:UpdateAssumeRolePolicy', 'fc:AddPermission', 'fc:CreateFunction', 'fc:UpdateFunctionCode', 'fc:UpdateFunctionConfiguration', 'sts:AssumeRole'], 'Potential': {}}
                     print('  Might already be an admin, check any explicit denies or policy condition keys!')
                     continue
             for perm in all_role_permissions:
@@ -644,6 +624,12 @@ if __name__ == '__main__':
         }
     }
 
+    function_escalation_method3 = {
+        'fc:UpdateFunctionConfiguration': {
+            'fc:UpdateFunctionConfiguration': True
+        }
+    }
+
     # check strategies 1 and 2
     print('\nScan the attack paths in the account.\n')
 
@@ -664,7 +650,7 @@ if __name__ == '__main__':
     if not escalation_group_all:
         print("Don't find privilege escalation path.")
     if escalation_group_all:
-        print("The privilege escalation path in the account:")
+        print("The privilege escalation paths in the account:")
         for method in escalation_group_all:
             print(f"    {method}")
         # print("\nDangerous permissions and their locations in the escalation path:")
@@ -679,7 +665,6 @@ if __name__ == '__main__':
                     for stack in service_function_permissions:
                         for func in stack['Function']:
                             if perm in func['Confirmed']:
-                                # print(f"    Application: {stack['StackName']}, Function: {func['FunctionName']}, RoleArn: {func['RoleArn']}")
                                 permission_location.append(
                                     {"Application": stack['StackName'], "Function": func['FunctionName']})
                     processed_permissions.add(perm)
@@ -691,136 +676,100 @@ if __name__ == '__main__':
         for updated_path in updated_escalation_group:
             print(updated_path)
 
+    print("\n" + "=" * 60)
+    print("Account-Level and Inter-Account Attack Path Analysis")
     print("=" * 60)
-    print(
-        '\nDivide all applications into two groups, combine the resources of the two groups respectively, and detect the attack path.')
+    print('\nSimulate two accounts, both of which have been provisioned with all the aforementioned applications, and detect three attack paths.')
+
     stack_names = [stack['StackName'] for stack in service_function_permissions]
-    total_stacks = len(stack_names)
-    combinations_list = generate_combinations(stack_names, total_stacks)
+    all_applications = ', '.join(stack_names)
+    all_confirmed_permissions = get_confirmed_union(stack_names, service_function_permissions)
 
-    print(
-        f"There are {len(combinations_list)} combinations in total. But only the following combination can fulfill the premise of cross-account contamination.")
-    # Record the number of valid combinations
-    num = 0
-    for i, (group1, group2) in enumerate(combinations_list, 1):
-        all_permission_location1 = []
-        all_permission_location2 = []
+    print(f"\nAccount 1:")
+    print(f"  The account contains the following services:")
+    print(f"    {all_applications}")
+    print(f"  Confirmed escalated permission: ")
+    print(f"    {all_confirmed_permissions}")
 
-        confirmed_group1 = get_confirmed_union(group1, service_function_permissions)
-        confirmed_group2 = get_confirmed_union(group2, service_function_permissions)
+    escalation_group_account1 = []
+    escalation_group_account1.extend(check_escalation_method1(all_confirmed_permissions, function_escalation_method1, "function_escalation_method1"))
+    escalation_group_account1.extend(check_escalation_method2(all_confirmed_permissions, function_escalation_method1, function_escalation_method2, "function_escalation_method2"))
 
-        # identification of function_escalation_method1 or function_escalation_method2
-        escalation_group1 = []
-        escalation_group1.extend(check_escalation_method1(confirmed_group1, function_escalation_method1,
-                                                          "function_escalation_method1"))
-        escalation_group1.extend(
-            check_escalation_method2(confirmed_group1, function_escalation_method1, function_escalation_method2,
-                                     "function_escalation_method2"))
-
-        escalation_group2 = []
-        escalation_group2.extend(check_escalation_method1(confirmed_group2, function_escalation_method1,
-                                                          "function_escalation_method1"))
-        escalation_group2.extend(
-            check_escalation_method2(confirmed_group2, function_escalation_method1, function_escalation_method2,
-                                     "function_escalation_method2"))
-
-        # Check whether the administrator of account 1 can be obtained. If not, delete the combination
-        if not escalation_group1:
-            continue
-
-        # list valid combinations
-        else:
-            num += 1
-            if num != 1:
-                print("=" * 60)
-            print(f"\nCombination {num}:")
-            print("\nAccount 1:")
-
-            print("  The account contains the following applications:")
-            output1 = ', '.join(group1)
-            print("    " + output1)
-
-            print(f"  Confirmed escalated permission: \n    {confirmed_group1}")
-
-            if escalation_group1:
-                print("\n  The privilege escalation path in Account 1:")
-                for method in escalation_group1:
-                    print(f"    {method}")
-
-                # print("\n  Dangerous permissions and their locations in this combination (Account 1):")
-                processed_permissions = set()
-                for method in escalation_group1:
-                    permissions = extract_permissions_from_method(method, function_escalation_method1,
-                                                                  function_escalation_method2)
-                    for perm in permissions:
-                        permission_location1 = []
-                        if perm not in processed_permissions:
-                            # print(f"\n    Permission: {perm}")
-                            for stack in service_function_permissions:
-                                if stack['StackName'] in group1:
-                                    for func in stack['Function']:
-                                        if perm in func['Confirmed']:
-                                            # print(f"      Application: {stack['StackName']}, Function: {func['FunctionName']}, RoleArn: {func['RoleArn']}")
-                                            permission_location1.append(
-                                                {"Application": stack['StackName'], "Function": func['FunctionName']})
-                            processed_permissions.add(perm)
-                            all_permission_location1.append({"Permission": perm, "location": permission_location1})
-
-                print("\n  Here are function-based attack paths in Account 1.\n")
-                updated_escalation_group1 = get_function_based_path(escalation_group1, all_permission_location1)
-                for updated_path in updated_escalation_group1:
-                    print(updated_path)
-
-            print("\nAccount 2:")
-
-            print("  The account contains the following applications:")
-            output2 = ', '.join(group2)
-            print("    " + output2)
-
-            print(f"  Confirmed escalated permission: \n    {confirmed_group2}")
-
-            if escalation_group2:
-                print("\n  The privilege escalation path in Account 2:")
-                for method in escalation_group2:
-                    print(f"    {method}")
-
-                # print("\n  Dangerous permissions and their locations in this combination (Account 2):")
-                processed_permissions = set()
-                for method in escalation_group2:
-                    permissions = extract_permissions_from_method(method, function_escalation_method1,
-                                                                  function_escalation_method2)
-                    for perm in permissions:
-                        permission_location2 = []
-                        if perm not in processed_permissions:
-                            # print(f"\n    Permission: {perm}")
-                            for stack in service_function_permissions:
-                                if stack['StackName'] in group2:
-                                    for func in stack['Function']:
-                                        if perm in func['Confirmed']:
-                                            # print(f"      Application: {stack['StackName']}, Function: {func['FunctionName']}, RoleArn: {func['RoleArn']}")
-                                            permission_location2.append(
-                                                {"Application": stack['StackName'], "Function": func['FunctionName']})
-                            processed_permissions.add(perm)
-                            all_permission_location2.append({"Permission": perm, "location": permission_location2})
-
-                print("\n  Here are function-based attack paths in Account 2.\n")
-                updated_escalation_group2 = get_function_based_path(escalation_group2, all_permission_location2)
-                for updated_path in updated_escalation_group2:
-                    print(updated_path)
-
-            # Check whether account 1 can infect account 2 through the Layer
-            if 'fc:UpdateFunctionConfiguration' in confirmed_group2 and escalation_group1:
-                print(
-                    "\n  Account 2 can be infected by Account 1,because Account 2 have fc:UpdateFunctionConfiguration.")
-                # Check whether account 1 can obtain account 2's administrator privileges
-                if escalation_group2:
-                    print("  Account 1 can obtain Account 2's administrator privileges through the layer.")
-                print(f"\n    Permission: fc:UpdateFunctionConfiguration")
-                for stack in service_function_permissions:
-                    if stack['StackName'] in group2:
+    if escalation_group_account1:
+        print(f"\n  The privilege escalation paths in Account 1:")
+        for method in escalation_group_account1:
+            print(f"    {method}")
+        # Output permission location
+        all_permission_location_account1 = []
+        processed_permissions = set()
+        for method in escalation_group_account1:
+            permissions = extract_permissions_from_method(method, function_escalation_method1, function_escalation_method2, function_escalation_method3)
+            for perm in permissions:
+                permission_location = []
+                if perm not in processed_permissions:
+                    for stack in service_function_permissions:
                         for func in stack['Function']:
-                            if 'fc:UpdateFunctionConfiguration' in func['Confirmed']:
-                                print(
-                                    f"      Application: {stack['StackName']}, Function: {func['FunctionName']}, RoleArn: {func['RoleArn']}")
+                            if perm in func['Confirmed']:
+                                permission_location.append({"Application": stack['StackName'], "Function": func['FunctionName']})
+                    processed_permissions.add(perm)
+                    all_permission_location_account1.append({"Permission": perm, "location": permission_location})
+        print(f"\n  Here are function-based attack paths in Account 1.\n")
+        updated_escalation_group_account1 = get_function_based_path(escalation_group_account1, all_permission_location_account1)
+        for updated_path in updated_escalation_group_account1:
+            print(f"    {updated_path}")
+    else:
+        print(f"\n  No privilege escalation path found in Account 1.")
 
+    print(f"\nAccount 2:")
+    print(f"  The account contains the following services:")
+    print(f"    {all_applications}")
+    print(f"  Confirmed escalated permission: ")
+    print(f"    {all_confirmed_permissions}")
+
+    escalation_group_account2 = []
+    escalation_group_account2.extend(check_escalation_method1(all_confirmed_permissions, function_escalation_method1, "function_escalation_method1"))
+    escalation_group_account2.extend(check_escalation_method2(all_confirmed_permissions, function_escalation_method1, function_escalation_method2, "function_escalation_method2"))
+
+    if escalation_group_account2:
+        print(f"\n  The privilege escalation paths in Account 2:")
+        for method in escalation_group_account2:
+            print(f"    {method}")
+        # Output permission location
+        all_permission_location_account2 = []
+        processed_permissions = set()
+        for method in escalation_group_account2:
+            permissions = extract_permissions_from_method(method, function_escalation_method1, function_escalation_method2, function_escalation_method3)
+            for perm in permissions:
+                permission_location = []
+                if perm not in processed_permissions:
+                    for stack in service_function_permissions:
+                        for func in stack['Function']:
+                            if perm in func['Confirmed']:
+                                permission_location.append({"Application": stack['StackName'], "Function": func['FunctionName']})
+                    processed_permissions.add(perm)
+                    all_permission_location_account2.append({"Permission": perm, "location": permission_location})
+        print(f"\n  Here are function-based attack paths in Account 2.\n")
+        updated_escalation_group_account2 = get_function_based_path(escalation_group_account2, all_permission_location_account2)
+        for updated_path in updated_escalation_group_account2:
+            print(f"    {updated_path}")
+    else:
+        print(f"\n  No privilege escalation path found in Account 2.")
+
+    #Check cross-account attack paths (Attack Path 3)---Layer-based contamination
+    if escalation_group_account1 and 'fc:UpdateFunctionConfiguration' in all_confirmed_permissions:
+        # Output detailed contamination information
+        print("\n===There are cross-account attack paths (Attack Path 3)===\n")
+        print("1. LAYER-BASED CONTAMINATION:")
+        print("   Due to Attack Path 1 or 2 in Account 1, Account 1 can infect Account 2 through FC Layer manipulation.")
+        print("   Required permission: fc:UpdateFunctionConfiguration")
+        print("   Functions with Sensitive Permissions:")
+        print("\n     Permission: fc:UpdateFunctionConfiguration")
+        for stack in service_function_permissions:
+            for func in stack['Function']:
+                if 'fc:UpdateFunctionConfiguration' in func['Confirmed']:
+                    print(f"     - {stack['StackName']}:{func['FunctionName']} (Role: {func['RoleArn']})")
+        if escalation_group_account2:
+            print("\n   Due to Attack Path 1 or 2 in Account 2, Account 1 can obtain Account 2's administrator privileges through FC Layer manipulation.")
+    else:
+        print("\nNot found cross-account attack paths (Attack Path 3).")
     print('\nPrivilege escalation check completed.')
