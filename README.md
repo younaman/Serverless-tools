@@ -55,13 +55,22 @@ Then copy the folder "fc2" to the corresponding location of the reference functi
 Ensure you have installed all necessary Python libraries for running the script.
 
 2. **Create the Input File**
-Create `aliyun_input.txt` file with the appropriate values corresponding to your environment.The content in aliyun_input.txt is as follows:
+Create `aliyun_input.txt` file with the appropriate values corresponding to your environment.The content format of aliyun_input.txt is as follows:
 
 ```plaintext
 <Access Key ID>
 <Secret Access Key>
 <Region ID>
 <Account ID> 
+```
+
+For example：
+
+```plaintext
+LTAI5t...
+abc1234567890abcdef
+cn-hangzhou  
+1234567890123456  
 ```
 
 And place this file in the same directory as 'aliyun_escalate.py'.
