@@ -21,7 +21,7 @@ Below are the detailed instructions for using each tool.
 ## **AWS Scanning Tool (`aws_escalate.py`)**
 
 ### **Description**
-This script (aws_escalate16.py) is designed to enumerate all IAM roles and Lambda functions in your AWS account, analyze their permissions, and detect possible privilege escalation paths, including cross-account contamination scenarios.
+This script (aws_escalate.py) is designed to enumerate all IAM roles and Lambda functions in your AWS account, analyze their permissions, and detect possible privilege escalation paths, including cross-account contamination scenarios.
 
 ### **Setup and Usage**
 
@@ -130,7 +130,7 @@ Account 1:
 ## **Aliyun Scanning Tool (aliyun_escalate.py)**
 
 ### **Description**
-This script (aliyun_escalate6.py) enumerates all RAM roles and Function Compute (FC) functions in your Alibaba Cloud account, analyzes their permissions, and detects possible privilege escalation paths, including cross-account contamination scenarios.
+This script (aliyun_escalate.py) enumerates all RAM roles and Function Compute (FC) functions in your Alibaba Cloud account, analyzes their permissions, and detects possible privilege escalation paths, including cross-account contamination scenarios.
 
 ### **Setup and Usage**
 
