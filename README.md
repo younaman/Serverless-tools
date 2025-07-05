@@ -19,7 +19,7 @@ These tools are in the early stages of development and serve as a proof-of-conce
 ## **AWS Scanning Tool (`aws_escalate.py`)**
 
 ### **Description**
-The `aws_escalate.py` script scans applications within an AWS account to identify potential risks. It requires uploading to **AWS CloudShell** and modifying the credentials file before execution.
+This script (aws_escalate16.py) is designed to enumerate all IAM roles and Lambda functions in your AWS account, analyze their permissions, and detect possible privilege escalation paths, including cross-account contamination scenarios.
 
 ### **Setup and Usage**
 
@@ -101,30 +101,30 @@ Account 1:
 
 ### **Test Cases**
 
-- 1. Minimal Permissions (No Escalation)
+- Minimal Permissions (No Escalation)
  **Setup**: Create a role with only read-only permissions, and a Lambda function using this role.  
  **Expected Output**:  
   - The function should be marked as "it is safe!"  
   - No privilege escalation paths should be found.  
 
-- 2. Confirmed Escalation Path
+- Confirmed Escalation Path
   **Setup**: Create a role with escalation-related permissions (e.g., `iam:PassRole` and `lambda:CreateFunction`), and assign it to a Lambda function.  
   **Expected Output**:  
   - The function should list these permissions as CONFIRMED.  
   - The script should output a privilege escalation path involving these permissions.  
 
-- 3. Cross-Account Contamination
+- Cross-Account Contamination
   **Setup**: Multiple stacks/functions, at least one with `lambda:UpdateFunctionConfiguration` permission.  
   **Expected Output**:  
   - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
 
-- 4. Deny Policies
+- Deny Policies
   **Setup**: A role with `*` allow but explicit deny on escalation actions.  
   **Expected Output**:  
   - The script should indicate "Might already be an admin, check any explicit denies or policy condition keys!"  
   - No confirmed escalation path.  
 
-- 5. Invalid/Expired Credentials
+- Invalid/Expired Credentials
   **Setup**: Run the script with invalid or expired AWS credentials.  
   **Expected Output**:  
   - The script should fail gracefully and print an error message.  
@@ -134,7 +134,7 @@ Account 1:
 ## **Aliyun Scanning Tool (aliyun_escalate.py)**
 
 ### **Description**
-The `aliyun_escalate.py` script scans applications within an Aliyun account to identify potential risks. It requires the installation of specific Python libraries and a properly configured input file.
+This script (aliyun_escalate6.py) enumerates all RAM roles and Function Compute (FC) functions in your Alibaba Cloud account, analyzes their permissions, and detects possible privilege escalation paths, including cross-account contamination scenarios.
 
 ### **Setup and Usage**
 
@@ -179,6 +179,105 @@ The output of the scan will be saved to aliyun_output.txt.
 4. **Review Results**
 After the script completes, open the `aliyun_output.txt` file to review the scan results.
 
+---
+
+### **Example Output**
+
+```plaintext
+Access Key ID: 
+Secret Access Key: 
+Region ID:
+Account ID:
+
+Creating FC Client with endpoint: <your_account_id>.<region_id>.fc.aliyuncs.com
+FC Client created successfully.
+Listing services and their functions...
+
+Service: my-fc-service
+  Function: my-func-1
+    Role ARN: acs:ram::1234567890123456:role/my-role
+    CONFIRMED: ['ram:PassRole', 'fc:CreateFunction']
+  Function: my-func-2
+    Role ARN: acs:ram::1234567890123456:role/another-role
+    It is safe!
+============================================================
+
+...
+
+Scan the attack paths in the account.
+
+The privilege escalation paths in the account:
+    confirm: 'ram:PassRole+fc:CreateFunction' -> 'ram:CreateRole+ram:AttachRolePolicy' -> function_escalation_method2
+
+Here are function-based attack paths in the account.
+
+    confirm: {ram:PassRole}my-fc-service:my-func-1+{fc:CreateFunction}my-fc-service:my-func-1 -> '{ram:CreateRole}my-fc-service:my-func-1+{ram:AttachRolePolicy}my-fc-service:my-func-1' -> function_escalation_method2
+
+...
+
+Account-Level and Inter-Account Attack Path Analysis
+============================================================
+
+Simulate two accounts, both of which have been provisioned with all the aforementioned services, and detect three attack paths.
+
+Account 1:
+  The account contains the following services:
+    my-fc-service, another-service
+  Confirmed escalated permission: 
+    ['ram:PassRole', 'fc:CreateFunction', ...]
+
+  The privilege escalation paths in Account 1:
+    confirm: 'ram:PassRole+fc:CreateFunction' -> 'ram:CreateRole+ram:AttachRolePolicy' -> function_escalation_method2
+
+  Here are function-based attack paths in Account 1.
+
+    confirm: {ram:PassRole}my-fc-service:my-func-1+{fc:CreateFunction}my-fc-service:my-func-1 -> '{ram:CreateRole}my-fc-service:my-func-1+{ram:AttachRolePolicy}my-fc-service:my-func-1' -> function_escalation_method2
+
+...
+
+===There are cross-account attack paths (Attack Path 3)===
+
+1. LAYER-BASED CONTAMINATION:
+   Due to Attack Path 1 or 2 in Account 1, Account 1 can infect Account 2 through FC Layer manipulation.
+   Required permission: fc:UpdateFunctionConfiguration
+   Functions with Sensitive Permissions:
+
+     Permission: fc:UpdateFunctionConfiguration
+     - my-fc-service:my-func-1 (Role: acs:ram::1234567890123456:role/my-role)
+```
+
+### **Test Cases**
+
+- Minimal Permissions (No Escalation)
+  **Setup**: Create a RAM role with only read-only permissions, and a FC function using this role.  
+  **Expected Output**:  
+  - The function should be marked as "It is safe!"  
+  - No privilege escalation paths should be found.  
+
+- Confirmed Escalation Path
+  **Setup**: Create a RAM role with `ram:PassRole` and `fc:CreateFunction` permissions, and assign it to a FC function.  
+  **Expected Output**:  
+  - The function should list these permissions as CONFIRMED.  
+  - The script should output a privilege escalation path involving these permissions.  
+
+- Cross-Account Contamination
+  **Setup**: Multiple services/functions, at least one with `fc:UpdateFunctionConfiguration` permission.  
+  **Expected Output**:  
+  - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
+
+- Deny Policies
+  **Setup**: A role with `*` allow but explicit deny on escalation actions.  
+  **Expected Output**:  
+  - The script should indicate "Might already be an admin, check any explicit denies or policy condition keys!"  
+  - No confirmed escalation path.  
+
+- Invalid/Expired Credentials
+  **Setup**: Run the script with invalid or expired Access Key/Secret.  
+- **Expected Output**:  
+  - The script should fail gracefully and print an error message.  
+
+---
+
 ## **Current Development Status**
 These tools are currently in the "strawman design" phase, and we are actively working toward achieving the following goals:
 
@@ -190,11 +289,11 @@ Construction of Attack Paths
 Leverage dangerous functions of third-party applications to construct actionable attack paths.
 
 3. **Automated PoC Generation**
-
 Build a comprehensive tool capable of analyzing all third-party applications and automatically generating Proof-of-Concept (PoC) exploits to simulate potential attacks.
 
 ## **Disclaimer**
-These tools are intended for research and educational purposes only. Use them responsibly and only with proper authorization. Unauthorized use of these tools may violate applicable laws and regulations.
-
+- This script is for security research and auditing purposes only. Do not use on accounts you do not own or have explicit permission to test.  
+- For large accounts, the script may take several minutes to complete enumeration.
+  
 ## **Feedback and Contributions**
 We welcome feedback, suggestions, and contributions to improve these tools. If you encounter any issues or have ideas for enhancement, feel free to open an issue or submit a pull request. Thank you for your interest!
