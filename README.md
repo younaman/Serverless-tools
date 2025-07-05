@@ -1,11 +1,20 @@
-# Cloud Application Scanning Tools
+# Cloud Privilege Escalation Path Scanner
 
-This repository contains two scanning tools designed for analyzing applications in cloud environments:
+This repository contains two scanning tools designed for auditing privilege escalation risks in cloud environments:
 
 - **`aws_escalate.py`**: A scanning tool for AWS accounts.
 - **`aliyun_escalate.py`**: A scanning tool for Aliyun accounts.
 
+Both scripts enumerate roles and function compute resources, analyze their permissions, and detect possible privilege escalation paths, including cross-account contamination scenarios.
+
 These tools are in the early stages of development and serve as a proof-of-concept (PoC). Below are the detailed instructions for using each tool.
+
+## **Features**
+- Enumerate all roles and their attached policies.  
+- Enumerate all Function Compute (FC/Lambda) services and functions, and map their effective roles.  
+- Analyze and output confirmed and potential privilege escalation paths.  
+- Simulate cross-account contamination scenarios and output detailed attack paths.  
+- Output function-based attack paths and sensitive permission locations.
 
 ---
 
