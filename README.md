@@ -5,7 +5,7 @@ This repository contains two scanning tools designed for auditing privilege esca
 - **`aws_escalate.py`**: A scanning tool for AWS accounts.
 - **`aliyun_escalate.py`**: A scanning tool for Aliyun accounts.
 
-These tools are in the early stages of development and serve as a proof-of-concept (PoC). Below are the detailed instructions for using each tool.
+These tools are in the early stages of development and serve as a proof-of-concept (PoC). 
 
 ## **Features**
 - Enumerate all roles and their attached policies.  
@@ -13,6 +13,8 @@ These tools are in the early stages of development and serve as a proof-of-conce
 - Analyze and output confirmed privilege escalation paths.  
 - Simulate cross-account contamination scenarios and output detailed attack paths.  
 - Output function-based attack paths and sensitive permission locations.
+
+Below are the detailed instructions for using each tool.
 
 ---
 
