@@ -281,6 +281,8 @@ Leverage dangerous functions of third-party applications to construct actionable
 3. **Automated PoC Generation**
 Build a comprehensive tool capable of analyzing all third-party applications and automatically generating Proof-of-Concept (PoC) exploits to simulate potential attacks.
 
+In addition, we used these two tools to scan the sensitive applications of Lambda on Amazon Web Services and Function Compute on Alibaba Cloud respectively. The output results are in `aliyun_output.txt` and `aws_output.txt` under the `output` folder.
+
 ## **Disclaimer**
 - This script is for security research and auditing purposes only. Do not use on accounts you do not own or have explicit permission to test.  
 - For large accounts, the script may take several minutes to complete enumeration.
