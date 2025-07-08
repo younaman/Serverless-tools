@@ -135,7 +135,7 @@ This script (aliyun_escalate.py) enumerates all RAM roles and Function Compute (
 ### **Setup and Usage**
 
 1. **Install Required Python Libraries**
-Install Required Python Libraries
+Use the following command to install the required Python libraries:
 
 ```plaintext
 pip install -r requirements.txt  
