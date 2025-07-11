@@ -119,19 +119,19 @@ Account 1:
   **Setup**: Create a role with escalation-related permissions (e.g., `sts:AssumeRole` and `lambda:UpdateFunctionCode`), and assign it to a Lambda function.  
   **Expected Output**:  
   - The function should list these permissions as CONFIRMED.  
-  - The script should output a privilege escalation path involving these permissions.  
+  - The script should output privilege escalation paths (Attack path 1 or 2) involving these permissions.  
 
 - Cross-Account Contamination
   **Setup**: Multiple stacks/functions, at least one of which in Account 2 has the `lambda:UpdateFunctionConfiguration` permission, and attack strategies 1 or 2 can be implemented in Account 1 (for example, the functions in Account 1 have `sts: AssumeRole` or `lambda: UpdateFunctionCode`).
   **Expected Output**:  
-  - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
+  - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths (Attack path 3).  
 
 - Performance Testing with Multiple Applications
-  **Setup**: Install 200 serverless applications in the account. Then, run the scanning tool to assess its performance and functionality under this scale.
+  **Setup**: Install 200 serverless applications in the account. Then run the scanning tool to assess its performance and functionality under this scale.
   **Expected Output**:
   - The tool should successfully enumerate all applications and their associated permissions.
   - The script should accurately identify and output any privilege escalation paths present.
-  - Performance metrics (such as scan time, resource usage) should be recorded to evaluate the tool’s efficiency with a large number of applications. 
+  - The tool is expected to take several minutes to complete.
 
 ---
 
