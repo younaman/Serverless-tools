@@ -25,8 +25,11 @@ This script (aws_escalate.py) is designed to enumerate all IAM roles and Lambda 
 
 ### **Setup and Usage**
 
-1. **Modify the Credentials File**
-   Update the `credentials` file located in the `.aws` directory with the following format in AWS CloudShell:
+1. **Log In and Upload Files**
+Log in to the Amazon Web Services (AWS) cloud platform, and upload `aws_escalate.py` file to the `/home/cloudshell-user` directory in CloudShell.
+
+2. **Modify the Credentials File**
+Update the `credentials` file located in the `/home/cloudshell-user/.aws` directory with the following format:
 ```plaintext
    [default]
    aws_access_key_id = AKIA*****   # AccessKeyID
@@ -34,9 +37,12 @@ This script (aws_escalate.py) is designed to enumerate all IAM roles and Lambda 
 ```
 The role or user associated with these access keys must have permission to access all resources within the account.
 
-2. **Run the Tool**
-  Execute the script using the following command:
+3.(Optional)**Install Serverless Applications**
 
+If there are no applications on the Lambda page in your account, you need to install some serverless applications first.
+
+4. **Run the Tool**
+Execute the script on cloudshell using the following command:
 ```plaintext
 python ./aws_escalate.py -p default > aws_output.txt
 ```
@@ -44,7 +50,7 @@ If you do not specify a profile [-p default], you will be prompted to select one
 
 The output of the scan will be saved to `aws_output.txt`.
 
-3. **Download and Review Results**
+5. **Download and Review Results**
 After the script completes, download the `aws_output.txt` file to view the scanning results.
 
 ### **Example Output**
@@ -144,8 +150,13 @@ pip install -r requirements.txt
 Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
-2. **Create the Input File**
-Create `aliyun_input.txt` file with the appropriate values corresponding to your environment.The content format of aliyun_input.txt is as follows:
+2.(Optional)**Register Aliyun Account and Install Function Compute Applications**
+
+If you do not have an Alibaba Cloud account, please register an account, obtain access key and install serverless applications in Function Compute.
+
+3. **Create the Input File**
+Create `aliyun_input.txt` file with the appropriate values corresponding to your environment, and place this file in the same directory as 'aliyun_escalate.py'.
+The content format of aliyun_input.txt is as follows:
 
 ```plaintext
 <Access Key ID>
@@ -162,10 +173,9 @@ abc1234567890abcdef
 cn-hangzhou  
 1234567890123456  
 ```
+The role or user associated with these access keys must have permission to access all resources within the account.
 
-And place this file in the same directory as 'aliyun_escalate.py'.
-
-3. **Run the Tool**
+4. **Run the Tool**
 Execute the script using the following command:
 
 ```plaintext
@@ -173,7 +183,7 @@ python ./aliyun_escalate.py < aliyun_input.txt > aliyun_output.txt
 ```
 The output of the scan will be saved to aliyun_output.txt.
 
-4. **Review Results**
+5. **Review Results**
 After the script completes, open the `aliyun_output.txt` file to review the scan results.
 
 ---
