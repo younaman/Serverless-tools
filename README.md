@@ -126,10 +126,12 @@ Account 1:
   **Expected Output**:  
   - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
 
-- Invalid/Expired Credentials
-  **Setup**: Run the script with invalid or expired AWS credentials.  
-  **Expected Output**:  
-  - The script should fail gracefully and print an error message.  
+- Performance Testing with Multiple Applications
+  **Setup**: Install 200 serverless applications in the account. Then, run the scanning tool to assess its performance and functionality under this scale.
+  **Expected Output**:
+  - The tool should successfully enumerate all applications and their associated permissions.
+  - The script should accurately identify and output any privilege escalation paths present.
+  - Performance metrics (such as scan time, resource usage) should be recorded to evaluate the tool’s efficiency with a large number of applications. 
 
 ---
 
