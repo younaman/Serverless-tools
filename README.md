@@ -37,7 +37,7 @@ Update the `credentials` file located in the `/home/cloudshell-user/.aws` direct
 ```
 The role or user associated with these access keys must have permission to access all resources within the account.
 
-3.(Optional)**Install Serverless Applications**
+3. (Optional)**Install Serverless Applications**
 
 If there are no applications on the Lambda page in your account, you need to install some serverless applications first.
 
@@ -150,7 +150,7 @@ pip install -r requirements.txt
 Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
-2.(Optional)**Register Aliyun Account and Install Function Compute Applications**
+2. (Optional)**Register Aliyun Account and Install Function Compute Applications**
 If you do not have an Alibaba Cloud account, please register an account, obtain access key and install serverless applications in Function Compute.
 
 3. **Create the Input File**
