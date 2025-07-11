@@ -26,9 +26,11 @@ This script (aws_escalate.py) is designed to enumerate all IAM roles and Lambda 
 ### **Setup and Usage**
 
 1. **Log In and Upload Files**
+
 Log in to the Amazon Web Services (AWS) cloud platform, and upload `aws_escalate.py` file to the `/home/cloudshell-user` directory in CloudShell.
 
 2. **Modify the Credentials File**
+
 Update the `credentials` file located in the `/home/cloudshell-user/.aws` directory with the following format:
 ```plaintext
    [default]
@@ -42,6 +44,7 @@ The role or user associated with these access keys must have permission to acces
 If there are no applications on the Lambda page in your account, you need to install some serverless applications first.
 
 4. **Run the Tool**
+
 Execute the script on cloudshell using the following command:
 ```plaintext
 python ./aws_escalate.py -p default > aws_output.txt
@@ -51,6 +54,7 @@ If you do not specify a profile [-p default], you will be prompted to select one
 The output of the scan will be saved to `aws_output.txt`.
 
 5. **Download and Review Results**
+
 After the script completes, download the `aws_output.txt` file to view the scanning results.
 
 ### **Example Output**
@@ -143,6 +147,7 @@ This script (aliyun_escalate.py) enumerates all RAM roles and Function Compute (
 ### **Setup and Usage**
 
 1. **Install Required Python Libraries**
+
 Use the following command to install the required Python libraries:
 
 ```plaintext
@@ -153,6 +158,7 @@ Then copy the folder "fc2" to the corresponding location of the reference functi
 Ensure you have installed all necessary Python libraries for running the script.
 
 2. (Optional)**Register Aliyun Account and Install Function Compute Applications**
+
 If you do not have an Alibaba Cloud account, please register an account, obtain access key and install serverless applications in Function Compute.
 
 3. **Create the Input File**
@@ -178,6 +184,7 @@ cn-hangzhou
 The role or user associated with these access keys must have permission to access all resources within the account.
 
 4. **Run the Tool**
+
 Execute the script using the following command:
 
 ```plaintext
@@ -186,6 +193,7 @@ python ./aliyun_escalate.py < aliyun_input.txt > aliyun_output.txt
 The output of the scan will be saved to aliyun_output.txt.
 
 5. **Review Results**
+
 After the script completes, open the `aliyun_output.txt` file to review the scan results.
 
 ---
@@ -267,12 +275,12 @@ Account 1:
   **Setup**: Create a role with escalation-related permissions (e.g., `sts:AssumeRole` and `fc:UpdateFunctionCode`), and assign it to a function.  
   **Expected Output**:  
   - The function should list these permissions as CONFIRMED.  
-  - The script should output a privilege escalation path involving these permissions.  
+  - The script should output privilege escalation paths (Attack path 1 or 2) involving these permissions.  
 
 - Cross-Account Contamination
   **Setup**: Multiple stacks/functions, at least one of which in Account 2 has the `fc:UpdateFunctionConfiguration` permission, and attack strategies 1 or 2 can be implemented in Account 1 (for example, the functions in Account 1 have `sts: Assumerole` or `fc: UpdateFunctionCode`).
   **Expected Output**:  
-  - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths.  
+  - The script should output the "LAYER-BASED CONTAMINATION" section under cross-account attack paths(Attack path 3).  
 
 - Invalid/Expired Credentials
   **Setup**: Run the script with invalid or expired AWS credentials.  
