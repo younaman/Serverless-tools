@@ -228,12 +228,16 @@ def main(args):
     try:
         # list all applications
         response = cf_client.list_stacks(StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE'])
-        stacks = response['StackSummaries']
+        stacks = response.get('StackSummaries', [])
 
         while 'NextToken' in response:
-            response = cf_client.list_stacks(NextToken=response['NextToken'])
-            stacks.extend(response['StackSummaries'])
-
+            response = cf_client.list_stacks(
+                NextToken=response['NextToken'],
+                StackStatusFilter=['CREATE_COMPLETE', 'UPDATE_COMPLETE']
+            )
+            stacks.extend(response.get('StackSummaries', []))
+            #time.sleep(0.1)  # # Add delay to avoid throttling
+        
         for stack in stacks:
             stack_name = stack['StackName']
             print(f"Application: {stack_name}")
