@@ -5,6 +5,7 @@ import sys
 import re
 from itertools import product
 from botocore.exceptions import ClientError, ProfileNotFound
+import time
 
 def main(args):
     #Upload the AWS CLI file
@@ -237,7 +238,7 @@ def main(args):
             )
             stacks.extend(response.get('StackSummaries', []))
             #time.sleep(0.1)  # # Add delay to avoid throttling
-        
+
         for stack in stacks:
             stack_name = stack['StackName']
             print(f"Application: {stack_name}")
