@@ -9,7 +9,7 @@ These tools are in the early stages of development and serve as a proof-of-conce
 
 ## **Features**
 - Enumerate all roles and their attached policies.  
-- Enumerate all Function Compute(FC) services/Lambda applications and functions, and map their effective roles.  
+- Enumerate all Function Compute (FC) services/Lambda applications and functions, and map their effective roles.  
 - Analyze and output confirmed privilege escalation paths.  
 - Simulate cross-account contamination scenarios and output detailed attack paths.  
 - Output function-based attack paths and sensitive permission locations.
