@@ -170,7 +170,8 @@ The content format of aliyun_input.txt is as follows:
 <Access Key ID>
 <Secret Access Key>
 <Region ID>
-<Account ID> 
+<Account ID>
+ 
 ```
 
 For example：
@@ -179,7 +180,8 @@ For example：
 LTAI5t...
 abc1234567890abcdef
 cn-hangzhou  
-1234567890123456  
+1234567890123456
+  
 ```
 The role or user associated with these access keys must have permission to access all resources within the account.
 
