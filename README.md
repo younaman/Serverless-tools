@@ -313,3 +313,6 @@ In addition, we used these two tools to scan the sensitive applications of Lambd
   
 ## **Feedback and Contributions**
 We welcome feedback, suggestions, and contributions to improve these tools. If you encounter any issues or have ideas for enhancement, feel free to open an issue or submit a pull request. Thank you for your interest!
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
