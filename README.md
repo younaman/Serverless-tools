@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/967344328.svg)](https://doi.org/10.5281/zenodo.16947526)
 # Cloud Privilege Escalation Path Scanner
 
 This repository contains two scanning tools designed for auditing privilege escalation risks in cloud environments:
