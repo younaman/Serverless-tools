@@ -69,7 +69,7 @@ Update the `credentials` file located in the `/home/cloudshell-user/.aws` direct
 ```
 The role or user associated with these access keys must have permission to access all resources within the account.
 
-3. (Optional)**Install Serverless Applications**
+3. (Optional) **Install Serverless Applications**
 
 Open the Lambda page on the AWS platform, click “Applications” in the right sidebar, then click “Create application” on the left. On the page that opens, select “Serverless application” and choose an application template to create your serverless application. Taking measure-cold-start as an example, direct deployment from the AWS Serverless Application Repository may result in a runtime mismatch error, indicating incompatibility with the current AWS platform. The solution involves modifying the 'runtime' parameter in the application template to specify a supported runtime version, after which the application can be successfully redeployed. 
 
@@ -187,11 +187,11 @@ pip install -r requirements.txt
 Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
-2. (Optional)**Register Aliyun Account and Log In**
+2. (Optional) **Register Aliyun Account and Log In**
 
 If you do not have an Alibaba Cloud account, please register an account and log in to obtain your access key.
 
-3. (Optional)**Install Function Compute Applications**
+3. (Optional) **Install Function Compute Applications**
 
 Open the Function Compute page on the Aliyun platform, click “Applications” in the right sidebar, then click “Create Application” on the left. On the page that opens, click 'Create Application from Template' and select an application template to create your serverless application. For instance, to deploy the fc-stable-diffusion application, first locate it in the Alibaba Serverless Application Center, click to access its deployment page, configure the required parameters, and proceed with deployment.
 
