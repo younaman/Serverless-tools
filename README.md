@@ -2,10 +2,21 @@
 
 This repository contains two scanning tools designed for auditing privilege escalation risks in cloud environments:
 
-- **`aws_escalate.py`**: A scanning tool for AWS accounts.
-- **`aliyun_escalate.py`**: A scanning tool for Aliyun accounts.
+- **`aws_escalate.py`**: A scanning tool for Amazon Web Services (AWS) accounts.
+- **`aliyun_escalate.py`**: A scanning tool for Alibaba Cloud (Aliyun) accounts.
 
-These tools are in the early stages of development and serve as a proof-of-concept (PoC). 
+In addition to the main scripts, the repository includes the following files and directories:
+
+- **`requirements.txt`**: A list of Python libraries, including specific version requirements, needed for running `aliyun_escalate.py`.
+- **`fc2/`**: A Python library folder used by `aliyun_escalate.py`.
+- **Example Output Files**: 
+  - `aws_output.txt`: Example output for `aws_escalate.py`.  
+  - `aliyun_output.txt`: Example output for `aliyun_escalate.py`.
+- **`README.md`**: This file, providing an overview of the repository.
+- **`LICENSE`**: The license file specifying the terms under which this software can be used, modified, and distributed.
+> **Note**: These tools are in the early stages of development and serve as a proof-of-concept (PoC).
+
+---
 
 ## **Features**
 - Enumerate all roles and their attached policies.  
@@ -14,7 +25,26 @@ These tools are in the early stages of development and serve as a proof-of-conce
 - Simulate cross-account contamination scenarios and output detailed attack paths.  
 - Output function-based attack paths and sensitive permission locations.
 
-Below are the detailed instructions for using each tool.
+---
+
+## Dependencies and Requirements
+
+### Hardware Dependencies
+
+Our artifact experiments are conducted on serverless platforms provided by AWS and Alibaba Cloud. Accessing these cloud environments requires only standard laptops or desktops.
+
+### Software Dependencies
+
+- **Scanner for Amazon Web Services**:
+  The scanning tool for AWS operates directly within the **AWS CloudShell** environment, an integrated terminal provided by the AWS cloud platform. To use this tool, you will need:
+  - AWS account credentials.
+  - Access keys for AWS users or roles to authenticate and perform the required operations.
+
+- **Scanner for Alibaba Cloud**:
+  The scanning tool for the Aliyun serverless platform is executed locally in a Python environment. The requirements include:
+  - Python version 3.10 or higher.
+  - The `fc2` library and other dependencies specified in the `requirements.txt` file.
+  - Access keys for Aliyun users or roles for authentication.
 
 ---
 
@@ -27,7 +57,7 @@ This script (aws_escalate.py) is designed to enumerate all IAM roles and Lambda 
 
 1. **Log In and Upload Files**
 
-Log in to the Amazon Web Services (AWS) cloud platform, and upload `aws_escalate.py` file to the `/home/cloudshell-user` directory in CloudShell.
+Log in to the Amazon Web Services (AWS) cloud platform, and upload `aws_escalate.py` file to the `/home/cloudshell-user` directory in CloudShell. If you do not have an AWS account, please register an account.
 
 2. **Modify the Credentials File**
 
@@ -41,7 +71,7 @@ The role or user associated with these access keys must have permission to acces
 
 3. (Optional)**Install Serverless Applications**
 
-If there are no applications on the Lambda page in your account, you need to install some serverless applications first.
+Open the Lambda page on the AWS platform, click “Applications” in the right sidebar, then click “Create application” on the left. On the page that opens, select “Serverless application” and choose an application template to create your serverless application. Taking measure-cold-start as an example, direct deployment from the AWS Serverless Application Repository may result in a runtime mismatch error, indicating incompatibility with the current AWS platform. The solution involves modifying the 'runtime' parameter in the application template to specify a supported runtime version, after which the application can be successfully redeployed. 
 
 4. **Run the Tool**
 
@@ -157,11 +187,15 @@ pip install -r requirements.txt
 Then copy the folder "fc2" to the corresponding location of the reference function library.
 Ensure you have installed all necessary Python libraries for running the script.
 
-2. (Optional)**Register Aliyun Account and Install Function Compute Applications**
+2. (Optional)**Register Aliyun Account and Log In**
 
-If you do not have an Alibaba Cloud account, please register an account, obtain access key and install serverless applications in Function Compute.
+If you do not have an Alibaba Cloud account, please register an account and log in to obtain your access key.
 
-3. **Create the Input File**
+3. (Optional)**Install Function Compute Applications**
+
+Open the Function Compute page on the Aliyun platform, click “Applications” in the right sidebar, then click “Create Application” on the left. On the page that opens, click 'Create Application from Template' and select an application template to create your serverless application. For instance, to deploy the fc-stable-diffusion application, first locate it in the Alibaba Serverless Application Center, click to access its deployment page, configure the required parameters, and proceed with deployment.
+
+4. **Create the Input File**
 
 Create `aliyun_input.txt` file with the appropriate values corresponding to your environment, and place this file in the same directory as 'aliyun_escalate.py'.
 The content format of aliyun_input.txt is as follows:
@@ -185,7 +219,7 @@ cn-hangzhou
 ```
 The role or user associated with these access keys must have permission to access all resources within the account.
 
-4. **Run the Tool**
+5. **Run the Tool**
 
 Execute the script using the following command:
 
@@ -194,7 +228,7 @@ python ./aliyun_escalate.py < aliyun_input.txt > aliyun_output.txt
 ```
 The output of the scan will be saved to aliyun_output.txt.
 
-5. **Review Results**
+6. **Review Results**
 
 After the script completes, open the `aliyun_output.txt` file to review the scan results.
 
