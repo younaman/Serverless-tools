@@ -4,10 +4,10 @@ This repository contains two scanning tools designed for auditing privilege esca
 
 - **`aws_escalate.py`**: A scanning tool for Amazon Web Services (AWS) accounts.
 - **`aliyun_escalate.py`**: A scanning tool for Alibaba Cloud (Aliyun) accounts.
-
+## Exact Environment Versions and Files
 In addition to the main scripts, the repository includes the following files and directories:
 
-- **`requirements.txt`**: A list of Python libraries, including specific version requirements, needed for running `aliyun_escalate.py`.
+- **`requirements.txt`**: A list of Python libraries, including specific version requirements, needed for running `aliyun_escalate.py`. Note that the execution of aws_escalate.py can be directly maked in the AWS Cloud CLI, and it doesn't need any specific versions or requirements.
 - **`fc2/`**: A Python library folder used by `aliyun_escalate.py`.
 - **Example Output Files**: 
   - `aws_output.txt`: Example output for `aws_escalate.py`.  
