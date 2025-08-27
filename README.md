@@ -349,3 +349,6 @@ We welcome feedback, suggestions, and contributions to improve these tools. If y
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Publication
+This code artifact supports the paper accepted at NDSS 2026. Complete citation information will be added following the camera-ready publication process.
